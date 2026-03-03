@@ -1,8 +1,9 @@
+/* Start Spinner */
 .submit-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* spacing between spinner and text */
+  gap: 8px;
   padding: 10px 20px;
   background-color: #cfa6a6;
   color: #333;
@@ -10,13 +11,10 @@
   cursor: pointer;
   transition: 0.3s ease;
 }
-
 .submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
-
-/* Spinner */
 .spinner {
   width: 16px;
   height: 16px;
@@ -25,9 +23,9 @@
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+/* END Spinner */

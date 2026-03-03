@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import InnerBanner from '../../components/common/InnerBanner';
-import { sendContactMessage } from "./ContactService";
+import { sendContactMessage } from "../../services/ContactService.js";
 
 const Contact = () => {
 

@@ -1,4 +1,4 @@
-import axios from '../config/createAxios';
+import axios from '../config/createAxios.js';
 
 export const fetchShopProducts = async () => {
   try {

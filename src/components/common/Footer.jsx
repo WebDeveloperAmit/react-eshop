@@ -1,6 +1,39 @@
-import React from 'react';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { subscribeNewsletter } from "../../services/CommonService.js";
 
 const Footer = () => {
+
+const [loading, setLoading] = useState(false);
+
+const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+} = useForm()
+
+const onSubmit = async (data) => {
+    try {
+        setLoading(true);
+        const response = await subscribeNewsletter(data);
+        setTimeout(() => {
+            if (response?.status === "success") {
+                toast.success(response?.message);
+                reset();
+            } else {
+                toast.error(response?.message);
+            }
+            setLoading(false);
+        }, 5000);
+    } catch (error) {
+        console.error("Error subscribing to newsletter:", error);
+        toast.error(error.response?.data?.message);
+        setLoading(false);
+    }
+}
+
   return (
     <>
       <div className="container-fluid bg-secondary text-dark mt-5 pt-5">
@@ -40,18 +73,44 @@ const Footer = () => {
                       </div>
                       <div className="col-md-4 mb-5">
                           <h5 className="font-weight-bold text-dark mb-4">Newsletter</h5>
-                          <form action="">
+
+                          <form onSubmit={handleSubmit(onSubmit)}>
+
                               <div className="form-group">
-                                  <input type="text" className="form-control border-0 py-4" placeholder="Your Name" required="required" />
+                                  <input 
+                                  type="text" 
+                                  className="form-control border-0 py-4" placeholder="Your Name" 
+                                  {...register("name", { required: true })}
+                                  />
+                                  <p>
+                                    {errors.name && <span className="text-danger">Name is required</span>}
+                                  </p>
                               </div>
+
                               <div className="form-group">
-                                  <input type="email" className="form-control border-0 py-4" placeholder="Your Email"
-                                      required="required" />
+                                  <input 
+                                  type="email" 
+                                  className="form-control border-0 py-4" placeholder="Your Email"
+                                    {...register("email", { required: true })}
+                                  />
+                                  <p>
+                                    {errors.email && <span className="text-danger">Email is required</span>}
+                                  </p>
                               </div>
+
                               <div>
-                                  <button className="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe Now</button>
+                                  <button 
+                                  className="btn btn-primary btn-block border-0 py-3 submit-btn" 
+                                  type="submit"
+                                  disabled={loading}
+                                  >
+                                    {loading && <span className="spinner"></span>}
+                                    {loading ? "Subscribing..." : "Subscribe Now"}
+                                    </button>
                               </div>
+
                           </form>
+
                       </div>
                   </div>
               </div>
