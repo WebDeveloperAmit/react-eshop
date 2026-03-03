@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import InnerBanner from '../../components/common/InnerBanner'
+import Loader from '../../components/Loader'
 import { getProductById } from '../../services/ShopService'
 import { addToCart } from '../cart/CartSlice'
 
 const ShopDetail = () => {
-    const { proId } = useParams()
+    const { proId } = useParams();
+
+    const [loading, setLoading] = useState(false);
     const [proDetail, setProDetail] = useState(null);
     const [localQty, setLocalQty] = useState(1);
 
@@ -19,12 +22,29 @@ const ShopDetail = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+
         const loadProDetail = async () => {
-            const data = await getProductById(proId)
-            if (data) setProDetail(data)
-        }
-        loadProDetail()
-    }, [proId])
+            try {
+                    setLoading(true);
+                    const response = await getProductById(proId);
+                    console.log("Products loaded:", response);
+                    setTimeout(() => {
+                        if (response?.status === "success") {
+                            setProDetail(response?.data);
+                            setLoading(false);
+                        } else {
+                            toast.error(response?.message);
+                            setLoading(false);
+                        }
+                    }, 1000);
+            } catch (error) {
+                console.error("Failed to load product detail:", error);
+                toast.error(error.response?.data?.message);
+                setLoading(false);
+            }
+        };
+        loadProDetail();
+    }, [proId]);
 
     const handleAddToCart = (product) => {
         dispatch(addToCart({ ...product, quantity: localQty }))
@@ -44,20 +64,27 @@ const ShopDetail = () => {
         setLocalQty(prev => (prev > 1 ? prev - 1 : 1))
     }
 
-    if (!proDetail) return <p style={{ textAlign: "center", fontSize: "30px", padding: "50px" }}>Loading...</p>;
+    // if (!proDetail) return <p style={{ textAlign: "center", fontSize: "30px", padding: "50px" }}>Loading...</p>;
+
+    if (!proDetail) return <Loader />;
 
   return (
     <>
         <InnerBanner title="Shop Detail" />
+
         <div className="container-fluid py-5">
             <div className="row px-xl-5">
                 <div className="col-lg-5 pb-5">
                     <div id="product-carousel" className="carousel slide" data-ride="carousel">
                         <div className="carousel-inner border">
                             <div className="carousel-item active">
-                                <img className="w-100 h-100" src={proDetail.image} alt={proDetail.title} />
+                                <img 
+                                className="w-100 h-100" 
+                                src={`${import.meta.env.VITE_BACKEND_ASSETS_URI}${proDetail?.thumbnail_image_url}`} 
+                                alt={proDetail?.product_name} 
+                                />
                             </div>
-                            {/* <div className="carousel-item">
+                            <div className="carousel-item">
                                 <img className="w-100 h-100" src="img/product-2.jpg" alt="Image" />
                             </div>
                             <div className="carousel-item">
@@ -65,7 +92,7 @@ const ShopDetail = () => {
                             </div>
                             <div className="carousel-item">
                                 <img className="w-100 h-100" src="img/product-4.jpg" alt="Image" />
-                            </div> */}
+                            </div>
                         </div>
                         <a className="carousel-control-prev" href="#product-carousel" data-slide="prev">
                             <i className="fa fa-2x fa-angle-left text-dark"></i>
@@ -77,7 +104,7 @@ const ShopDetail = () => {
                 </div>
 
                 <div className="col-lg-7 pb-5">
-                    <h3 className="font-weight-semi-bold">{proDetail.title}</h3>
+                    <h3 className="font-weight-semi-bold">{proDetail?.product_name}</h3>
                     <div className="d-flex mb-3">
                         <div className="text-primary mr-2">
                             <small className="fas fa-star"></small>
@@ -88,59 +115,31 @@ const ShopDetail = () => {
                         </div>
                         <small className="pt-1">(50 Reviews)</small>
                     </div>
-                    <h3 className="font-weight-semi-bold mb-4">${proDetail.price}</h3>
-                    <p className="mb-4">{proDetail.description}</p>
 
-                    {/* <div className="d-flex mb-3">
-                        <p className="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
-                        <form>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="size-1" name="size" />
-                                <label className="custom-control-label" htmlFor="size-1">XS</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="size-2" name="size" />
-                                <label className="custom-control-label" htmlFor="size-2">S</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="size-3" name="size" />
-                                <label className="custom-control-label" htmlFor="size-3">M</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="size-4" name="size" />
-                                <label className="custom-control-label" htmlFor="size-4">L</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="size-5" name="size" />
-                                <label className="custom-control-label" htmlFor="size-5">XL</label>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="d-flex mb-4">
-                        <p className="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                        <form>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="color-1" name="color" />
-                                <label className="custom-control-label" htmlFor="color-1">Black</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="color-2" name="color" />
-                                <label className="custom-control-label" htmlFor="color-2">White</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="color-3" name="color" />
-                                <label className="custom-control-label" htmlFor="color-3">Red</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="color-4" name="color" />
-                                <label className="custom-control-label" htmlFor="color-4">Blue</label>
-                            </div>
-                            <div className="custom-control custom-radio custom-control-inline">
-                                <input type="radio" className="custom-control-input" id="color-5" name="color" />
-                                <label className="custom-control-label" htmlFor="color-5">Green</label>
-                            </div>
-                        </form>
-                    </div> */}
+                                <h3 className="font-weight-semi-bold mb-4">
+                                    {proDetail.sale_price && proDetail.sale_price < proDetail.regular_price ? (
+                                        <>
+                                            <p className="text-danger mr-2">
+                                                ${proDetail.sale_price}
+                                            </p>
+                                            <p className="text-muted mr-2">
+                                                <del>${proDetail.regular_price}</del>
+                                            </p>
+                                            <span className="badge badge-success">
+                                                {Math.round(
+                                                ((proDetail.regular_price - proDetail.sale_price) / proDetail.regular_price) * 100
+                                                )}
+                                                % OFF
+                                            </span>
+                                        </>
+                                    ) : (
+                                            <p>${proDetail.regular_price}</p>
+                                    )}
+                                </h3>
+
+
+                    {/* <h3 className="font-weight-semi-bold mb-4">${proDetail.regular_price}</h3> */}
+                    <p className="mb-4">{proDetail?.short_desc}</p>
 
                     <div className="d-flex align-items-center mb-4 pt-2">
                         <div className="input-group quantity mr-3" style={{ width: "130px" }}>
@@ -199,99 +198,18 @@ const ShopDetail = () => {
                     <div className="tab-content">
                         <div className="tab-pane fade show active" id="tab-pane-1">
                             <h4 className="mb-3">Product Description</h4>
-                            <p>{proDetail.description}</p>
+                            <p>{proDetail.long_desc}</p>
                         </div>
                         
                         <div className="tab-pane fade" id="tab-pane-2">
                             <h4 className="mb-3">Additional Information</h4>
                             <p>No additional information found</p>
-                            {/* <div className="row">
-                                <div className="col-md-6">
-                                    <ul className="list-group list-group-flush">
-                                        <li className="list-group-item px-0">
-                                            Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                        </li>
-                                    </ul> 
-                                </div>
-                                <div className="col-md-6">
-                                    <ul className="list-group list-group-flush">
-                                        <li className="list-group-item px-0">
-                                            Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                        </li>
-                                        <li className="list-group-item px-0">
-                                            Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                        </li>
-                                    </ul> 
-                                </div>
-                            </div> */}
+
                         </div>
 
                         <div className="tab-pane fade" id="tab-pane-3">
                             <div className="row">
                                 <div className='col-12'>No reviews</div>
-                                {/* <div className="col-md-6">
-                                    <h4 className="mb-4">1 review for "Colorful Stylish Shirt"</h4>
-                                    <div className="media mb-4">
-                                        <img src="img/user.jpg" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: "45px" }} />
-                                        <div className="media-body">
-                                            <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                            <div className="text-primary mb-2">
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star-half-alt"></i>
-                                                <i className="far fa-star"></i>
-                                            </div>
-                                            <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <h4 className="mb-4">Leave a review</h4>
-                                    <small>Your email address will not be published. Required fields are marked *</small>
-                                    <div className="d-flex my-3">
-                                        <p className="mb-0 mr-2">Your Rating * :</p>
-                                        <div className="text-primary">
-                                            <i className="far fa-star"></i>
-                                            <i className="far fa-star"></i>
-                                            <i className="far fa-star"></i>
-                                            <i className="far fa-star"></i>
-                                            <i className="far fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <form>
-                                        <div className="form-group">
-                                            <label htmlFor="message">Your Review *</label>
-                                            <textarea id="message" cols="30" rows="5" className="form-control"></textarea>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="name">Your Name *</label>
-                                            <input type="text" className="form-control" id="name" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="email">Your Email *</label>
-                                            <input type="email" className="form-control" id="email" />
-                                        </div>
-                                        <div className="form-group mb-0">
-                                            <input type="submit" value="Leave Your Review" className="btn btn-primary px-3" readOnly />
-                                        </div>
-                                    </form>
-                                </div> */}
 
                             </div>
                         </div>
