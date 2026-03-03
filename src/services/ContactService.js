@@ -1,4 +1,4 @@
-import axiosInstance from "../../config/createAxios";
+import axiosInstance from "../config/createAxios";
 
 export const sendContactMessage = async (data) => {
     try {
