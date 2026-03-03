@@ -27,7 +27,7 @@ const ShopDetail = () => {
             try {
                     setLoading(true);
                     const response = await getProductById(proId);
-                    console.log("Products loaded:", response);
+                    // console.log("Products loaded:", response);
                     setTimeout(() => {
                         if (response?.status === "success") {
                             setProDetail(response?.data);
@@ -116,30 +116,30 @@ const ShopDetail = () => {
                         <small className="pt-1">(50 Reviews)</small>
                     </div>
 
-                                <h3 className="font-weight-semi-bold mb-4">
-                                    {proDetail.sale_price && proDetail.sale_price < proDetail.regular_price ? (
-                                        <>
-                                            <p className="text-danger mr-2">
-                                                ${proDetail.sale_price}
-                                            </p>
-                                            <p className="text-muted mr-2">
-                                                <del>${proDetail.regular_price}</del>
-                                            </p>
-                                            <span className="badge badge-success">
-                                                {Math.round(
-                                                ((proDetail.regular_price - proDetail.sale_price) / proDetail.regular_price) * 100
-                                                )}
-                                                % OFF
-                                            </span>
-                                        </>
-                                    ) : (
-                                            <p>${proDetail.regular_price}</p>
+                    <h3 className="font-weight-semi-bold mb-4">
+                        {proDetail?.sale_price && proDetail?.sale_price < proDetail?.regular_price ? (
+                            <>
+                                <p className="text-danger mr-2">
+                                    ${proDetail?.sale_price}
+                                </p>
+                                <p className="text-muted mr-2">
+                                    <del>${proDetail?.regular_price}</del>
+                                </p>
+                                <span className="badge badge-success">
+                                    {Math.round(
+                                    ((proDetail?.regular_price - proDetail?.sale_price) / proDetail?.regular_price) * 100
                                     )}
-                                </h3>
+                                    % OFF
+                                </span>
+                            </>
+                        ) : (
+                                <p>${proDetail?.regular_price}</p>
+                        )}
+                    </h3>
 
 
                     {/* <h3 className="font-weight-semi-bold mb-4">${proDetail.regular_price}</h3> */}
-                    <p className="mb-4">{proDetail?.short_desc}</p>
+                    <div dangerouslySetInnerHTML={{ __html: proDetail?.short_desc }} />
 
                     <div className="d-flex align-items-center mb-4 pt-2">
                         <div className="input-group quantity mr-3" style={{ width: "130px" }}>
@@ -198,7 +198,7 @@ const ShopDetail = () => {
                     <div className="tab-content">
                         <div className="tab-pane fade show active" id="tab-pane-1">
                             <h4 className="mb-3">Product Description</h4>
-                            <p>{proDetail.long_desc}</p>
+                            <div dangerouslySetInnerHTML={{ __html: proDetail?.long_desc }}></div>
                         </div>
                         
                         <div className="tab-pane fade" id="tab-pane-2">

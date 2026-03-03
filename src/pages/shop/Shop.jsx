@@ -21,7 +21,7 @@ const Shop = () => {
             try {
                     setLoading(true);
                     const response = await fetchProducts();
-                    console.log("Products loaded:", response);
+                    // console.log("Products loaded:", response);
                     setTimeout(() => {
                         if (response?.status === "success") {
                             setProducts(response?.data);
@@ -30,7 +30,7 @@ const Shop = () => {
                             toast.error(response?.message);
                             setLoading(false);
                         }
-                    }, 2000);
+                    }, 1000);
             } catch (error) {
                 console.error("Failed to load products:", error);
                 toast.error(error.response?.data?.message);
