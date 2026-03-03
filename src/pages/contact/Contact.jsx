@@ -1,7 +1,34 @@
-import React from 'react'
-import InnerBanner from '../../components/common/InnerBanner'
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import InnerBanner from '../../components/common/InnerBanner';
+import { sendContactMessage } from "./ContactService";
 
 const Contact = () => {
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm()
+
+    const onSubmit = async (data) => {
+        try {
+            const response = await sendContactMessage(data);
+            if (response.status === "success") {
+                setTimeout(() => {
+                    toast.success(response?.message);
+                    reset();
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    toast.error(response?.message);
+                }, 300);
+            }
+        } catch (error) {
+            toast.error("Something went wrong!");
+        }
+    }
 
   return (
     <>
@@ -14,33 +41,81 @@ const Contact = () => {
                 <div className="col-lg-7 mb-5">
                     <div className="contact-form">
                         <div id="success"></div>
-                        <form name="sentMessage" id="contactForm">
+                        <form 
+                        name="sentMessage" 
+                        id="contactForm"
+                        onSubmit={handleSubmit(onSubmit)}
+                        >
                             <div className="control-group">
-                                <input type="text" className="form-control" id="name" placeholder="Your Name"
-                                    required="required" data-validation-required-message="Please enter your name" />
-                                <p className="help-block text-danger"></p>
+                                <input 
+                                type="text" 
+                                className="form-control" 
+                                id="full_name" 
+                                placeholder="Your Full Name"
+                                {...register("full_name", { required: true })}
+                                />
+                                <p className="help-block text-danger">
+                                    {errors.full_name && <span>Full name is required</span>}
+                                </p>
                             </div>
+
                             <div className="control-group">
-                                <input type="email" className="form-control" id="email" placeholder="Your Email"
-                                    required="required" data-validation-required-message="Please enter your email" />
-                                <p className="help-block text-danger"></p>
+                                <input 
+                                type="email" 
+                                className="form-control" 
+                                id="email" 
+                                placeholder="Your Email"
+                                {...register("email", { required: true })} 
+                                />
+                                <p className="help-block text-danger">
+                                    {errors.email && <span>Email is required</span>}
+                                </p>
                             </div>
+
                             <div className="control-group">
-                                <input type="text" className="form-control" id="subject" placeholder="Subject"
-                                    required="required" data-validation-required-message="Please enter a subject" />
-                                <p className="help-block text-danger"></p>
+                                <input 
+                                type="text" 
+                                className="form-control" 
+                                id="subject" 
+                                placeholder="Subject"
+                                {...register("subject", { required: true })}
+                                />
+                                <p className="help-block text-danger">
+                                    {errors.subject && <span>Subject is required</span>}
+                                </p>
                             </div>
+
                             <div className="control-group">
-                                <textarea className="form-control" rows="6" id="message" placeholder="Message"
-                                    required="required"
-                                    data-validation-required-message="Please enter your message"></textarea>
-                                <p className="help-block text-danger"></p>
+                                <textarea 
+                                className="form-control" 
+                                rows="6" 
+                                id="message" 
+                                placeholder="Message"
+                                {...register("message", { required: true })}
+                                ></textarea>
+                                <p className="help-block text-danger">
+                                    {errors.message && <span>Message is required</span>}
+                                </p>
                             </div>
+
                             <div>
-                                <button className="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">Send
-                                    Message</button>
+                                <button 
+                                className="btn btn-primary py-2 px-4" type="submit" 
+                                id="sendMessageButton"
+                                disabled={isSubmitting}
+                                >
+                                {isSubmitting ? (
+                                    <>
+                                        <span className="custom-spinner"></span>
+                                        <span style={{ marginLeft: "8px" }}>Sending...</span>
+                                    </>
+                                ) : (
+                                    "Send Message"
+                                )}
+                                </button>
                             </div>
                         </form>
+
                     </div>
                 </div>
                 <div className="col-lg-5 mb-5">
