@@ -52,3 +52,13 @@
     transform: rotate(360deg);
   }
 }
+
+.price-area {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.price-area .badge {
+  font-size: 15px;
+  padding: 5px;
+}

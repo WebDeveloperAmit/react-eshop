@@ -121,30 +121,30 @@ const ShopDetail = () => {
                         <small className="pt-1">(50 Reviews)</small>
                     </div>
 
-                    <h3 className="font-weight-semi-bold mb-4">
+                    <div className="font-weight-semi-bold mb-4 price-area">
                         {proDetail?.sale_price && proDetail?.sale_price < proDetail?.regular_price ? (
                             <>
-                                <p className="text-danger mr-2">
+                                <h3 className="text-danger mr-2">
                                     ${proDetail?.sale_price}
-                                </p>
-                                <p className="text-muted mr-2">
+                                </h3>
+                                <h3 className="text-muted mr-2">
                                     <del>${proDetail?.regular_price}</del>
-                                </p>
-                                <span className="badge badge-success">
+                                </h3>
+                                <h3 className="badge badge-success">
                                     {Math.round(
                                     ((proDetail?.regular_price - proDetail?.sale_price) / proDetail?.regular_price) * 100
                                     )}
                                     % OFF
-                                </span>
+                                </h3>
                             </>
                         ) : (
-                                <p>${proDetail?.regular_price}</p>
+                                <h3 className="font-weight-semi-bold mb-4">${proDetail?.regular_price}</h3>
                         )}
-                    </h3>
+                    </div>
 
 
                     {/* <h3 className="font-weight-semi-bold mb-4">${proDetail.regular_price}</h3> */}
-                    <div dangerouslySetInnerHTML={{ __html: proDetail?.short_desc }} />
+                    <div style={{ marginBottom: "10px" }} dangerouslySetInnerHTML={{ __html: proDetail?.short_desc }} />
 
                     <div className="d-flex align-items-center mb-4 pt-2">
                         <div className="input-group quantity mr-3" style={{ width: "130px" }}>
