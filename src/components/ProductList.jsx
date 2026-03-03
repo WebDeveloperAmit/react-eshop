@@ -1,12 +1,21 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const ProductList = ({ products, handleAddToCart }) => {
+
+const [currentPage, setCurrentPage] = useState(1);
+const productsPerPage = 6;
+
+const indexOfLast = currentPage * productsPerPage;
+const indexOfFirst = indexOfLast - productsPerPage;
+const currentProducts = products.slice(indexOfFirst, indexOfLast);
+const totalPages = Math.ceil(products.length / productsPerPage);
 
   return (
     <>
         {products && products.length > 0 ? (
             <>
-                {products.map((product, index) => (
+                {currentProducts.map((product, index) => (
                     <div key={index} className="col-lg-4 col-md-6 col-sm-12 pb-1">
                         <div className="card product-item border-0 mb-4">
                             <div className="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
@@ -60,7 +69,7 @@ const ProductList = ({ products, handleAddToCart }) => {
             </div>
         )}
 
-        <div className="col-12 pb-1">
+        {/* <div className="col-12 pb-1">
             <nav aria-label="Page navigation">
             <ul className="pagination justify-content-center mb-3">
                 <li className="page-item disabled">
@@ -80,7 +89,27 @@ const ProductList = ({ products, handleAddToCart }) => {
                 </li>
             </ul>
             </nav>
+        </div> */}
+
+        <div className="col-12 pb-1">
+            <nav aria-label="Page navigation">
+            <ul className="pagination justify-content-center mb-3">
+                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                <a className="page-link" href="javascript:void(0)" onClick={() => setCurrentPage(currentPage - 1)}>Previous</a>
+                </li>
+                {Array.from({ length: totalPages }, (_, i) => (
+                <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
+                    <a className="page-link" href="javascript:void(0)" onClick={() => setCurrentPage(i + 1)}>{i + 1}</a>
+                </li>
+                ))}
+                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                <a className="page-link" href="javascript:void(0)" onClick={() => setCurrentPage(currentPage + 1)}>Next</a>
+                </li>
+            </ul>
+            </nav>
         </div>
+
+        
 
     </>
   )
