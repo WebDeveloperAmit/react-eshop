@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import InnerBanner from '../../components/common/InnerBanner';
@@ -5,28 +6,31 @@ import { sendContactMessage } from "./ContactService";
 
 const Contact = () => {
 
+    const [loading, setLoading] = useState(false);
+
     const {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm()
 
     const onSubmit = async (data) => {
         try {
+            setLoading(true);
             const response = await sendContactMessage(data);
-            if (response.status === "success") {
-                setTimeout(() => {
+            setTimeout(() => {
+                if (response.status === "success") {
                     toast.success(response?.message);
                     reset();
-                }, 300);
-            } else {
-                setTimeout(() => {
+                } else {
                     toast.error(response?.message);
-                }, 300);
-            }
+                }
+                setLoading(false);
+            }, 3000);
         } catch (error) {
             toast.error("Something went wrong!");
+            setLoading(false);
         }
     }
 
@@ -100,18 +104,13 @@ const Contact = () => {
 
                             <div>
                                 <button 
-                                className="btn btn-primary py-2 px-4" type="submit" 
+                                className={`btn btn-primary py-2 px-4 submit-btn`}
+                                 type="submit" 
                                 id="sendMessageButton"
-                                disabled={isSubmitting}
+                                disabled={loading}
                                 >
-                                {isSubmitting ? (
-                                    <>
-                                        <span className="custom-spinner"></span>
-                                        <span style={{ marginLeft: "8px" }}>Sending...</span>
-                                    </>
-                                ) : (
-                                    "Send Message"
-                                )}
+                                {loading && <span className="spinner"></span>}
+                                {loading ? "Sending..." : "Send Message"}
                                 </button>
                             </div>
                         </form>
