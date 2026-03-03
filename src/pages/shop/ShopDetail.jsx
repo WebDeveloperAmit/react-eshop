@@ -12,6 +12,7 @@ const ShopDetail = () => {
 
     const [loading, setLoading] = useState(false);
     const [proDetail, setProDetail] = useState(null);
+    const [proGallery, setProGallery] = useState([]);
     const [localQty, setLocalQty] = useState(1);
 
     // const cart = useSelector((state) => state.cart.cart)
@@ -27,10 +28,11 @@ const ShopDetail = () => {
             try {
                     setLoading(true);
                     const response = await getProductById(proId);
-                    // console.log("Products loaded:", response);
+                    console.log("Products loaded:", response);
                     setTimeout(() => {
                         if (response?.status === "success") {
                             setProDetail(response?.data);
+                            setProGallery(response?.gallery_images || []);
                             setLoading(false);
                         } else {
                             toast.error(response?.message);
@@ -45,6 +47,14 @@ const ShopDetail = () => {
         };
         loadProDetail();
     }, [proId]);
+
+    // Combine thumbnail + galleries
+    const allImages = [
+        proDetail?.thumbnail_image_url,
+        ...(proGallery.map(g => g.image_url) || [])
+    ];
+
+    // console.log("allImages:", allImages);
 
     const handleAddToCart = (product) => {
         dispatch(addToCart({ ...product, quantity: localQty }))
@@ -77,22 +87,17 @@ const ShopDetail = () => {
                 <div className="col-lg-5 pb-5">
                     <div id="product-carousel" className="carousel slide" data-ride="carousel">
                         <div className="carousel-inner border">
-                            <div className="carousel-item active">
-                                <img 
-                                className="w-100 h-100" 
-                                src={`${import.meta.env.VITE_BACKEND_ASSETS_URI}${proDetail?.thumbnail_image_url}`} 
-                                alt={proDetail?.product_name} 
-                                />
-                            </div>
-                            <div className="carousel-item">
-                                <img className="w-100 h-100" src="img/product-2.jpg" alt="Image" />
-                            </div>
-                            <div className="carousel-item">
-                                <img className="w-100 h-100" src="img/product-3.jpg" alt="Image" />
-                            </div>
-                            <div className="carousel-item">
-                                <img className="w-100 h-100" src="img/product-4.jpg" alt="Image" />
-                            </div>
+
+                            {allImages.map((imgUrl, index) => (
+                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
+                                    <img 
+                                    className="w-100 h-100" 
+                                    src={`${import.meta.env.VITE_BACKEND_ASSETS_URI}${imgUrl}`} 
+                                    alt={proDetail?.product_name} 
+                                    />
+                                </div>
+                            ))}
+
                         </div>
                         <a className="carousel-control-prev" href="#product-carousel" data-slide="prev">
                             <i className="fa fa-2x fa-angle-left text-dark"></i>
