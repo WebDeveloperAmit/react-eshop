@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Navbar = () => {
@@ -67,8 +66,8 @@ const Navbar = () => {
                                 className={`nav-item nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>Contact</Link>
                             </div>
                             <div className="navbar-nav ml-auto py-0">
-                                <a href="" className="nav-item nav-link">Login</a>
-                                <a href="" className="nav-item nav-link">Register</a>
+                                <Link to="/login" className="nav-item nav-link">Login</Link>
+                                <Link to="/register" className="nav-item nav-link">Register</Link>
                             </div>
                         </div>
                     </nav>

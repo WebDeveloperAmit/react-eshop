@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import App from './App.jsx';
 import { store } from './app/store.js';
 import './index.css';
+import './pages/user/dashboard.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

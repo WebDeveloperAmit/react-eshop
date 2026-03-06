@@ -1,11 +1,17 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomeLayout from "./components/layout/HomeLayout";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import Cart from "./pages/cart/Cart";
 import Checkout from "./pages/checkout/Checkout";
 import Contact from "./pages/contact/Contact";
 import Home from './pages/home/Home';
 import Shop from "./pages/shop/Shop";
 import ShopDetail from "./pages/shop/ShopDetail";
+import Dashboard from "./pages/user/Dashboard";
+import MyOrders from "./pages/user/MyOrders";
+import UpdatePassword from "./pages/user/UpdatePassword";
+import UpdateProfile from "./pages/user/UpdateProfile";
 
 function App() {
 
@@ -14,6 +20,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomeLayout />}>
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/profile" element={<UpdateProfile />} />
+            <Route path="/change-password" element={<UpdatePassword />} />
+
             <Route index element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop-detail/:proId" element={<ShopDetail />} />
