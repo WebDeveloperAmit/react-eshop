@@ -119,3 +119,56 @@
 .dashboard-btn:hover {
   background: #b97e79;
 }
+
+/* Dashboard Card */
+
+.dashboard-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  padding: 25px;
+}
+
+/* Welcome Section */
+
+.dashboard-welcome h4 {
+  font-weight: 600;
+}
+
+.dashboard-welcome p {
+  color: #777;
+}
+
+/* Stats Cards */
+
+.dashboard-stats {
+  margin-top: 20px;
+}
+
+.stat-box {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.stat-box:hover {
+  background: #d19c97;
+  color: #fff;
+}
+
+.stat-number {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Account Info */
+
+.account-info {
+  margin-top: 25px;
+}
+
+.account-info p {
+  margin-bottom: 6px;
+}
