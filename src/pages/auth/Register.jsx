@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import "./auth.css";
 
 const Register = () => {
 
@@ -19,64 +21,64 @@ const Register = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
 
-        <div className="col-md-6">
+    <div className="auth-page">
 
-          <div className="card shadow p-4">
+      <div className="auth-card">
 
-            <h3 className="text-center mb-4">
-              Create an Account
-            </h3>
+        <h3 className="auth-title">Create Account</h3>
+        <p className="auth-subtitle">Join our store today</p>
 
-            <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
 
-              <div className="mb-3">
-                <label>Name</label>
-                <input
-                type="text"
-                name="name"
-                className="form-control"
-                onChange={handleChange}
-                />
-              </div>
+          {/* Name */}
 
-              <div className="mb-3">
-                <label>Email</label>
-                <input
-                type="email"
-                name="email"
-                className="form-control"
-                onChange={handleChange}
-                />
-              </div>
-
-              <div className="mb-3">
-                <label>Password</label>
-                <input
-                type="password"
-                name="password"
-                className="form-control"
-                onChange={handleChange}
-                />
-              </div>
-
-              <button type="submit" className="btn btn-primary w-100">
-                Register
-              </button>
-
-            </form>
-
-            <p className="text-center mt-3">
-              Already have an account? <Link to="/login">Login</Link>
-            </p>
-
+          <div className="input-group-custom">
+            <FaUser className="input-icon"/>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              onChange={handleChange}
+            />
           </div>
 
-        </div>
+          {/* Email */}
+
+          <div className="input-group-custom">
+            <FaEnvelope className="input-icon"/>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Password */}
+
+          <div className="input-group-custom">
+            <FaLock className="input-icon"/>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              onChange={handleChange}
+            />
+          </div>
+
+          <button className="auth-btn">
+            Register
+          </button>
+
+        </form>
+
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
 
       </div>
+
     </div>
   )
 }

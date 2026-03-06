@@ -1,17 +1,30 @@
-import { Link } from "react-router-dom";
+import { FaBox, FaHome, FaKey, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 const UserSidebar = () => {
   return (
     <div className="dashboard-sidebar">
-      <Link to="/dashboard" className="active">
-        Dashboard
-      </Link>
 
-      <Link to="/my-orders">My Orders</Link>
+      <NavLink to="/dashboard">
+        <FaHome /> Dashboard
+      </NavLink>
 
-      <Link to="/profile">Update Profile</Link>
+      <NavLink to="/my-orders">
+        <FaBox /> My Orders
+      </NavLink>
 
-      <Link to="/change-password">Change Password</Link>
+      <NavLink to="/profile">
+        <FaUser /> Update Profile
+      </NavLink>
+
+      <NavLink to="/change-password">
+        <FaKey /> Change Password
+      </NavLink>
+
+      <NavLink to="/logout">
+        <FaSignOutAlt /> Logout
+      </NavLink>
+
     </div>
   );
 };

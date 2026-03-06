@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomeLayout from "./components/layout/HomeLayout";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Cart from "./pages/cart/Cart";
@@ -23,6 +24,7 @@ function App() {
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/my-orders" element={<MyOrders />} />

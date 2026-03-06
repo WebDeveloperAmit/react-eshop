@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import "./auth.css";
 
 const Login = () => {
 
@@ -18,52 +20,54 @@ const Login = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
 
-        <div className="col-md-5">
+    <div className="auth-page">
 
-          <div className="card shadow p-4">
-            <h3 className="text-center mb-4">Login</h3>
+      <div className="auth-card">
 
-            <form onSubmit={handleSubmit}>
+        <h3 className="auth-title">Welcome Back</h3>
+        <p className="auth-subtitle">Login to your account</p>
 
-              <div className="form-group mb-3">
-                <label>Email</label>
-                <input
-                type="email"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+        <form onSubmit={handleSubmit}>
 
-              <div className="form-group mb-3">
-                <label>Password</label>
-                <input
-                type="password"
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <button type="submit" className="btn btn-primary w-100">
-                Login
-              </button>
-
-            </form>
-
-            <p className="text-center mt-3">
-                Don't have an account? <Link to="/register">Register</Link>
-            </p>
-
+          <div className="input-group-custom">
+            <FaEnvelope className="input-icon"/>
+            <input
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+            />
           </div>
 
-        </div>
+          <div className="input-group-custom">
+            <FaLock className="input-icon"/>
+            <input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="auth-options">
+            <Link to="/forgot-password">Forgot Password?</Link>
+          </div>
+
+          <button className="auth-btn">
+            Login
+          </button>
+
+        </form>
+
+        <p className="auth-footer">
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
 
       </div>
+
     </div>
+
   )
 }
 
