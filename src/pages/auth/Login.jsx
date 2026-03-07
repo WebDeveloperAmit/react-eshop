@@ -1,22 +1,53 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { loginSuccess } from "../../redux/slices/auth/authSlice";
+import { loginService } from "../../services/auth/AuthService";
 import "./auth.css";
 
 const Login = () => {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e)=>{
-    e.preventDefault();
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm()
+
+  const onSubmit = async (data) => {
 
     const userData = {
-      email,
-      password
+      email: data.email,
+      password: data.password
     }
-
-    console.log(userData);
+    
+    try {
+      setLoading(true);
+      const response = await loginService(userData);
+      setTimeout(() => {
+        if (response?.status === "success") {
+            toast.success(response?.message);
+            reset();  
+            dispatch(loginSuccess(response.data));
+            navigate("/dashboard");
+        } else {
+          toast.error(response?.message);
+        }
+        setLoading(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message);
+      setLoading(false);
+    }
   }
 
   return (
@@ -28,16 +59,16 @@ const Login = () => {
         <h3 className="auth-title">Welcome Back</h3>
         <p className="auth-subtitle">Login to your account</p>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
 
           <div className="input-group-custom">
             <FaEnvelope className="input-icon"/>
             <input
               type="email"
               placeholder="Enter email"
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              {...register("email", { required: "Email is required" })}
             />
+            {errors.email && <p className="text-danger mt-1">{errors.email.message}</p>}
           </div>
 
           <div className="input-group-custom">
@@ -45,17 +76,21 @@ const Login = () => {
             <input
               type="password"
               placeholder="Enter password"
-              value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              {...register("password", { required: "Password is required" })}
             />
+            {errors.password && <p className="text-danger mt-1">{errors.password.message}</p>}
           </div>
 
           <div className="auth-options">
             <Link to="/forgot-password">Forgot Password?</Link>
           </div>
 
-          <button className="auth-btn">
-            Login
+          <button 
+          type="submit" 
+          className="auth-btn submit-btn"
+          >
+            {loading && <span className="spinner"></span>}
+            {loading ? "Logging in..." : "Login"}
           </button>
 
         </form>

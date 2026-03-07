@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomeLayout from "./components/layout/HomeLayout";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -26,11 +27,16 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/my-orders" element={<MyOrders />} />
-            <Route path="/profile" element={<UpdateProfile />} />
-            <Route path="/change-password" element={<UpdatePassword />} />
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/my-orders" element={<MyOrders />} />
+              <Route path="/profile" element={<UpdateProfile />} />
+              <Route path="/change-password" element={<UpdatePassword />} />
+            </Route>
 
+
+            {/* Public Routes */}
             <Route index element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop-detail/:proId" element={<ShopDetail />} />
