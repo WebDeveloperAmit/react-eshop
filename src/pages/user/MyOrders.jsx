@@ -22,15 +22,14 @@ const MyOrders = () => {
           console.error("Error fetching orders:", error);
           toast.error(error.response?.data?.message);
         } finally {
-          setLoading(false);
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
         }
       }
       fetchOrders();
     }, []);
 
-  if (loading) {
-    return <p className="text-center mt-5">Loading...</p>;
-  }
 
   return (
     <div className="container mt-5">
@@ -56,62 +55,68 @@ const MyOrders = () => {
 
             <tbody>
 
-              {orders.length === 0 ? (
+              {loading ? (
                 <tr>
-                  <td colSpan="6" className="text-center">No orders found.</td>
+                  <td colSpan="6" className="text-center">
+                    Loading orders...
+                  </td>
+                </tr>
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No orders found.
+                  </td>
                 </tr>
               ) : (
-                orders && orders.map((order) => (
-                <tr key={order._id}>
-                  
-                  <td>#{order._id.slice(-6).toUpperCase()}</td>
+                orders.map((order) => (
+                  <tr key={order._id}>
 
-                  <td>
-                    {order.orderItems?.map((item, index) => (
-                       <div key={item.product?._id || index}>
-                        {item.product?.name || "Product"} (x{item.quantity})
-                      </div>
-                    ))}
-                  </td>
+                    <td>#{order._id.slice(-6).toUpperCase()}</td>
 
-                  <td>₹{order.total}</td>
+                    <td>
+                      {order.orderItems?.map((item, index) => (
+                        <div key={item.product?._id || index}>
+                          {item.product?.name || "Product"} (x{item.quantity})
+                        </div>
+                      ))}
+                    </td>
 
-                  <td>
-                    <span className={`order-status ${
-                      order.orderStatus === "delivered"
-                        ? "status-delivered"
-                        : order.orderStatus === "processing"
-                        ? "status-pending"
-                        : order.orderStatus === "shipped"
-                        ? "status-shipped"
-                        : "status-cancelled"
-                    }`}>
-                      {order.orderStatus}
-                    </span>
-                  </td>
+                    <td>₹{order.total}</td>
 
-                  <td>{new Date(order.createdAt).toLocaleDateString("en-IN")}</td>
+                    <td>
+                      <span className={`order-status ${
+                        order.orderStatus === "delivered"
+                          ? "status-delivered"
+                          : order.orderStatus === "processing"
+                          ? "status-pending"
+                          : order.orderStatus === "shipped"
+                          ? "status-shipped"
+                          : "status-cancelled"
+                      }`}>
+                        {order.orderStatus}
+                      </span>
+                    </td>
 
-                  <td>
-                    <Link 
-                      to={`/shop-detail/${order.orderItems[0]?.product?._id}`} 
-                      className="view-btn"
-                      target="_blank"
-                    >
-                      <FaEye />
-                    </Link>
-                  </td>
-                </tr>
+                    <td>
+                      {new Date(order.createdAt).toLocaleDateString("en-IN")}
+                    </td>
 
-              ))
-            )}
-                {/* <td>
-                  <span className="order-status status-delivered">
-                    Delivered
-                  </span>
-                </td> */}
+                    <td>
+                      <Link
+                        to={`/shop-detail/${order.orderItems[0]?.product?._id}`}
+                        className="view-btn"
+                        target="_blank"
+                      >
+                        <FaEye />
+                      </Link>
+                    </td>
+
+                  </tr>
+                ))
+              )}
 
             </tbody>
+
           </table>
         </div>
       </div>
