@@ -1,8 +1,7 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import InnerBanner from '../../components/common/InnerBanner';
-import { decrementQuantity, incrementQuantity, removeProductFromCart } from './CartSlice';
+import { decrementQuantity, incrementQuantity, removeProductFromCart } from '../../redux/slices/CartSlice';
 
 const Cart = () => {
 

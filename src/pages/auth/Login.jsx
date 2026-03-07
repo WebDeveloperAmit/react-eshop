@@ -36,7 +36,10 @@ const Login = () => {
         if (response?.status === "success") {
             toast.success(response?.message);
             reset();  
-            dispatch(loginSuccess(response.data));
+            dispatch(loginSuccess({
+              token: response?.token,
+              user: response?.user
+            }));
             navigate("/dashboard");
         } else {
           toast.error(response?.message);

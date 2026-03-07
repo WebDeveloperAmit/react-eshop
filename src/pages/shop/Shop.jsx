@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader.jsx';
 import ProductList from '../../components/ProductList.jsx';
+import { addToCart } from '../../redux/slices/CartSlice.js';
 import { fetchProducts } from '../../services/ShopService.js';
-import { addToCart } from '../cart/CartSlice.js';
 
 const Shop = () => {
 

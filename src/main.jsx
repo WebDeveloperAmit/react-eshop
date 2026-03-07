@@ -4,9 +4,10 @@ import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App.jsx';
-import { store } from './app/store.js';
+// import { store } from './app/store.js';
 import './index.css';
 import './pages/user/dashboard.css';
+import { store } from './redux/store/store.js';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

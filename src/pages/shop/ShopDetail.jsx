@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import InnerBanner from '../../components/common/InnerBanner'
 import Loader from '../../components/Loader'
+import { addToCart } from '../../redux/slices/CartSlice'
 import { getProductById } from '../../services/ShopService'
-import { addToCart } from '../cart/CartSlice'
 
 const ShopDetail = () => {
     const { proId } = useParams();
