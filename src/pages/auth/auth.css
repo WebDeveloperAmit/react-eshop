@@ -102,3 +102,12 @@
   color: #d19c97;
   font-weight: 500;
 }
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 38px;
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
