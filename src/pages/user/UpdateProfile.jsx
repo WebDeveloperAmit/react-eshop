@@ -1,6 +1,9 @@
 import UserSidebar from "../../components/user/UserSidebar";
 
 const UpdateProfile = () => {
+
+
+  
   return (
     <div className="container mt-5">
       <div className="row">

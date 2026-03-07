@@ -53,11 +53,11 @@ const Dashboard = () => {
 
             </div>
 
-            <div className="account-info">
+            {/* <div className="account-info">
               <h5>Account Information</h5>
               <p><strong>Name:</strong> Amit Das</p>
               <p><strong>Email:</strong> amit@email.com</p>
-            </div>
+            </div> */}
 
           </div>
 

@@ -1,6 +1,12 @@
-import { Link } from 'react-router-dom'
+import { FaUser } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    // console.log("Navbar - isAuthenticated:", isAuthenticated);
+
   return (
     <>
         <div className="container-fluid mb-5">
@@ -66,8 +72,18 @@ const Navbar = () => {
                                 className={`nav-item nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>Contact</Link>
                             </div>
                             <div className="navbar-nav ml-auto py-0">
-                                <Link to="/login" className="nav-item nav-link">Login</Link>
-                                <Link to="/register" className="nav-item nav-link">Register</Link>
+
+                                {isAuthenticated ? (
+                                    <>
+                                        <Link to="/dashboard" className="nav-item nav-link"><FaUser /> My Account</Link>
+                                    </>
+                                ) : (
+                                    <>
+                                         <Link to="/login" className="nav-item nav-link">Login</Link>
+                                         <Link to="/register" className="nav-item nav-link">Register</Link>
+                                    </>
+                                )}
+
                             </div>
                         </div>
                     </nav>
