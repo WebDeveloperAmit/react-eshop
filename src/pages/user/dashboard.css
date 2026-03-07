@@ -196,3 +196,22 @@
   background: #f8d7da;
   color: #721c24;
 }
+
+/* Password hide show */
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 45px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 38px;
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
+/* END */
