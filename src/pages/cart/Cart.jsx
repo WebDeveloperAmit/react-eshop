@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader';
 import { decrementQuantity, incrementQuantity, removeProductFromCart } from '../../redux/slices/CartSlice';
-import { getCartService } from '../../services/CartService';
+import { getCartService, removeCartService } from '../../services/CartService';
 
 const Cart = () => {
 
@@ -24,7 +24,7 @@ const Cart = () => {
             try {
                 setLoading(true);
                 const res = await getCartService();
-                console.log("Cart data fetched:", res);
+                // console.log("Cart data fetched:", res);
                 setTimeout(() => {
                     if (res?.status === "success") {
                         setLoading(false);
@@ -53,9 +53,67 @@ const Cart = () => {
         dispatch(decrementQuantity(productId))
     }
 
+    // const handleRemoveProduct = async (product) => {
+
+    //     try {
+    //         const res = await removeCartService(product._id);
+    //         if (res?.status === "success") {
+    //             setCartData({
+    //                 ...cartData,
+    //                 products: cartData.products.filter(p => p._id !== product._id)
+    //             });
+    //             dispatch(removeProductFromCart(product._id));
+    //             toast.success(res?.message);
+    //         } else {
+    //             toast.error(res?.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("Failed to remove product from cart:", error);
+    //         toast.error("Failed to remove product from cart");
+    //     }
+
+    // }
+
     const handleRemoveProduct = (product) => {
-        dispatch(removeProductFromCart(product))
-    }
+
+        toast.info(
+            <div>
+                <p>Remove this item?</p>
+                <button 
+                    onClick={() => confirmRemove(product)} 
+                    className="btn btn-sm btn-danger mr-2"
+                >
+                    Yes
+                </button>
+                <button 
+                    onClick={() => toast.dismiss()} 
+                    className="btn btn-sm btn-secondary"
+                >
+                    No
+                </button>
+            </div>,
+            { autoClose: false }
+        );
+    };
+
+    const confirmRemove = async (product) => {
+        try {
+            const res = await removeCartService(product._id);
+
+            if (res?.status === "success") {
+                setCartData(prev => ({
+                    ...prev,
+                    products: prev.products.filter(p => p._id !== product._id)
+                }));
+
+                dispatch(removeProductFromCart(product._id));
+                toast.dismiss();
+                toast.success(res?.message);
+            }
+        } catch (error) {
+            toast.error("Failed to remove product");
+        }
+    };
 
   return (
     <>
