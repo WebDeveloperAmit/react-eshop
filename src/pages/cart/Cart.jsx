@@ -21,7 +21,7 @@ const Cart = () => {
             try {
                 setLoading(true);
                 const res = await getCartService();
-                // console.log("Cart data fetched:", res);
+                console.log("Cart data fetched:", res);
                 setTimeout(() => {
                     if (res?.status === "success") {
                         setLoading(false);

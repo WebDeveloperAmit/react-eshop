@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomeLayout from "./components/layout/HomeLayout";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
@@ -14,8 +16,43 @@ import Dashboard from "./pages/user/Dashboard";
 import MyOrders from "./pages/user/MyOrders";
 import UpdatePassword from "./pages/user/UpdatePassword";
 import UpdateProfile from "./pages/user/UpdateProfile";
+import { setCart } from "./redux/slices/CartSlice";
+import { getCartService } from "./services/CartService";
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  // Fetch cart on app load
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+
+        const res = await getCartService();
+
+        if (res?.status === "success") {
+
+          const products = res.data.products.map(p => ({
+            _id: p._id,
+            productId: p.productId._id,
+            product_name: p.productId.product_name,
+            price: p.price,
+            quantity: p.quantity,
+            image: p.productId.thumbnail_image_url
+          }));
+          
+          dispatch(setCart(products));
+
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch cart:", error);
+      }
+    };
+
+    fetchCart();
+
+  }, [dispatch]);
 
   return (
     <>

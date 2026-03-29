@@ -55,13 +55,18 @@ const Shop = () => {
                 quantity: localQty
             });
 
-            if (res?.status !== "success") {
-                toast.error(res?.message);
-                return;
-            }
+            // console.log("Add to cart response:", res);
+            // return;
 
-            dispatch(addToCart({ ...product, _id: product._id, quantity: localQty }));
-            toast.success(`Product added to cart!`);
+            if (res?.status === "success") {
+
+                dispatch(addToCart({ 
+                    ...product, 
+                    _id: product._id, 
+                    quantity: localQty 
+                }));
+                toast.success(res?.message);
+            }
             
         } catch (error) {
             console.error("Failed to add product to cart:", error);

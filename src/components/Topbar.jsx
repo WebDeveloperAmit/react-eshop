@@ -1,10 +1,10 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { selectCartRowCount } from '../redux/slices/CartSlice';
 
 const Topbar = () => {
 
-    const cartProducts = useSelector((state) => state.cart.cart)
+const cartCount = useSelector(selectCartRowCount);
 
   return (
     <>
@@ -68,7 +68,7 @@ const Topbar = () => {
                     </a> */}
                     <Link to={`/cart`} className="btn border">
                         <i className="fas fa-shopping-cart text-primary"></i>
-                        <span className="badge">{cartProducts && cartProducts.length > 0 ? cartProducts.length : '0' }</span>
+                        <span className="badge">{cartCount}</span>
                     </Link>
                 </div>
             </div>
