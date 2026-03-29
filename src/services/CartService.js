@@ -50,9 +50,14 @@ export const removeCartService = async (productId) => {
 // UPDATE CART QUANTITY
 export const updateCartQtyService = async (productId, quantity) => {
     try {
-        
+        const response = await axiosInstance.put(`/cart/${productId}`, { quantity });
+        return response.data;
     } catch (error) {
-        
+        console.error("updateCartQtyService: Failed to update cart quantity:", error);
+        return {
+            error: "error",
+            message: error.response?.data?.message
+        }
     }
 }
 

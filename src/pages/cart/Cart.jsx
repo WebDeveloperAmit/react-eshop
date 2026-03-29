@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader';
 import { removeProductFromCart } from '../../redux/slices/CartSlice';
-import { removeCartService } from '../../services/CartService';
+import { removeCartService, updateCartQtyService } from '../../services/CartService';
 
 const Cart = () => {
 
@@ -53,8 +53,21 @@ const Cart = () => {
 
     // }, []);
 
-    const handleIncrementQuantity = (productId) => {
-        dispatch(incrementQuantity(productId))
+    const handleIncrementQuantity = async (productId) => {
+
+        try {
+            const res = await updateCartQtyService(productId, 1);
+
+            if (res?.status === "success") {
+                dispatch(incrementQuantity(productId));
+            } else {
+                toast.error(res?.message || "Failed to update quantity");
+            }
+        } catch (error) {
+            console.error("Failed to update cart quantity:", error);
+            toast.error("Failed to update cart quantity");
+        }
+
     }
 
     const handleDecrementQuantity = (productId) => {
