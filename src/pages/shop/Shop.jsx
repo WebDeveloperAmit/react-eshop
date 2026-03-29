@@ -42,7 +42,8 @@ const Shop = () => {
     }, []);
 
     const handleAddToCart = async (product) => {
-
+        // console.log("Adding to cart:", product, "Quantity:", localQty);
+        // return;
         if (!isLoggedIn()) {
             toast.error("Please login first");
             return;
@@ -64,10 +65,12 @@ const Shop = () => {
                 // }));
 
                 dispatch(addToCart({ 
-                    _id: product._id,
                     productId: product._id,
                     product_name: product.product_name,
-                    price: Number(product.price || 0),
+                    // price: Number(product.sale_price ?? product.regular_price ?? 0),
+                    price: product.sale_price > 0
+                        ? Number(product.sale_price)
+                        : Number(product.regular_price || 0),
                     quantity: Number(localQty || 1),
                     image: product.thumbnail_image_url || ""
                 }));
