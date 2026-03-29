@@ -11,6 +11,10 @@ const Cart = () => {
 
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    // const [cartData, setCartData] = useState({
+    //     products: [],
+    //     cartTotal: 0
+    // });
 
      const shippingCost = 10;
 
@@ -21,6 +25,41 @@ const Cart = () => {
         total + Number(item.price || 0) * Number(item.quantity || 0),
         0
     );
+
+    // useEffect(() => {
+
+    //     const fetchCartData = async () => {
+    //         try {
+    //             setLoading(true);
+    //             const res = await getCartService();
+    //             // console.log("Cart data fetched:", res);
+    //             setTimeout(() => {
+    //                 if (res?.status === "success") {
+    //                     setLoading(false);
+    //                     setCartData(res.data);
+    //                 } else {
+    //                     setLoading(false);
+    //                     toast.error(res?.message);
+    //                 }
+    //             }, 1000);
+    //         } catch (error) {
+    //             setLoading(false);
+    //             console.error("Failed to fetch cart data:", error);
+    //             toast.error("Failed to fetch cart data");
+    //         }
+    //     }
+
+    //     fetchCartData();
+
+    // }, []);
+
+    const handleIncrementQuantity = (productId) => {
+        dispatch(incrementQuantity(productId))
+    }
+
+    const handleDecrementQuantity = (productId) => {
+        dispatch(decrementQuantity(productId))
+    }
 
     // Cart item remove
     const handleRemoveProduct = (product) => {
