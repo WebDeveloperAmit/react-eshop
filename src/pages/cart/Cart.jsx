@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader';
+import { removeProductFromCart } from '../../redux/slices/CartSlice';
+import { removeCartService } from '../../services/CartService';
 
 const Cart = () => {
 
@@ -43,31 +45,20 @@ const Cart = () => {
     };
 
     const confirmRemove = async (product, toastId) => {
-        console.log("Removing product:", product);
-        toast.dismiss(toastId);
-        // try {
-        //     const res = await removeCartService(product.productId._id);
+        // console.log("Removing product:", product);
+        // console.log("Removing product:", product.productId);
+        // toast.dismiss(toastId);
+        try {
+            const res = await removeCartService(product.productId);
 
-        //     if (res?.status === "success") {
-
-        //         // Update UI properly
-        //         const updatedProducts = cartData.products.filter(
-        //             (p) => p.productId._id !== product.productId._id
-        //         );
-
-        //         setCartData(prev => ({
-        //             ...prev,
-        //             products: updatedProducts
-        //         }));
-
-        //         dispatch(removeProductFromCart(product.productId._id));
-
-        //         toast.dismiss(toastId);
-        //         toast.success(res?.message);
-        //     }
-        // } catch (error) {
-        //     toast.error("Failed to remove product");
-        // }
+            if (res?.status === "success") {
+                dispatch(removeProductFromCart(product.productId));
+                toast.dismiss(toastId);
+                toast.success(res?.message);
+            }
+        } catch (error) {
+            toast.error("Failed to remove product");
+        }
     };
 
   return (

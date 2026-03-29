@@ -26,6 +26,10 @@ export const cartSlice = createSlice({
         //     }
         // },
 
+        setCart: (state, action) => {
+            state.cart = action.payload;
+        },
+
         addToCart: (state, action) => {
             const item = action.payload;
 
@@ -59,19 +63,21 @@ export const cartSlice = createSlice({
 
         removeProductFromCart: (state, action) => {
             state.cart = state.cart.filter(
-                (item) => item._id !== action.payload
-            )
-        },
-
-        setCart: (state, action) => {
-            state.cart = action.payload;
+                item => item.productId !== action.payload
+            );
         }
+
+        // removeProductFromCart: (state, action) => {
+        //     state.cart = state.cart.filter(
+        //         (item) => item._id !== action.payload
+        //     )
+        // },
 
     }
 
 })
 
-export const { addToCart, incrementQuantity, decrementQuantity, removeProductFromCart, setCart } = cartSlice.actions;
+export const { setCart, addToCart, incrementQuantity, decrementQuantity, removeProductFromCart } = cartSlice.actions;
 
 export const selectCartRowCount = state => state.cart.cart.length;
 
