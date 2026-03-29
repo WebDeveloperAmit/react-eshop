@@ -33,11 +33,17 @@ export const getCartService = async () => {
 
 
 // REMOVE CART
-export const removeCartService = async () => {
+export const removeCartService = async (cartId) => {
     try {
-        
+        const response = await axiosInstance.delete('/cart/', cartId);
+        return response.data;
     } catch (error) {
-        
+        console.error("removeCartService: Failed to remove cart:", error);
+        return {
+            error: "error",
+            message: error.response?.data?.message
+        }
+
     }
 }
 

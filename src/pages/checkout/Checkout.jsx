@@ -1,19 +1,15 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import InnerBanner from '../../components/common/InnerBanner';
 
 const Checkout = () => {
 
-    const dispatch = useDispatch();
-    const cartProducts = useSelector((state) => state.cart.cart)
-
+    const cartProducts = useSelector((state) => state.cart.cart);
     const ShippingCost = 10;
     const totalPrice = cartProducts.reduce(
         (total, product) => total + product.price * product.quantity,
         0
-    )
-
-    const grandTotal = totalPrice + ShippingCost
+    );
+    const grandTotal = totalPrice + ShippingCost;
 
   return (
     <>
@@ -147,8 +143,8 @@ const Checkout = () => {
                                         {
                                             cartProducts.map((product) => (
                                                 <div key={product.id} className="d-flex justify-content-between">
-                                                    <p>{product.title}</p>
-                                                    <p>${product.price.toFixed(2)}</p>
+                                                    <p>{product.product_name}</p>
+                                                    <p>₹{product.price.toFixed(2)} x {product.quantity}</p>
                                                 </div>
                                             ))
                                         }
@@ -163,17 +159,17 @@ const Checkout = () => {
                             <hr className="mt-0" />
                             <div className="d-flex justify-content-between mb-3 pt-1">
                                 <h6 className="font-weight-medium">Subtotal</h6>
-                                <h6 className="font-weight-medium">${totalPrice.toFixed(0)}</h6>
+                                <h6 className="font-weight-medium">₹{totalPrice.toFixed(0)}</h6>
                             </div>
                             <div className="d-flex justify-content-between">
-                                <h6 className="font-weight-medium">Shipping</h6>
-                                <h6 className="font-weight-medium">$10</h6>
+                                <h6 className="font-weight-medium">Shipping charge</h6>
+                                <h6 className="font-weight-medium">₹{ShippingCost.toFixed(0)}</h6>
                             </div>
                         </div>
                         <div className="card-footer border-secondary bg-transparent">
                             <div className="d-flex justify-content-between mt-2">
                                 <h5 className="font-weight-bold">Total</h5>
-                                <h5 className="font-weight-bold">${grandTotal.toFixed(0)}</h5>
+                                <h5 className="font-weight-bold">₹{grandTotal.toFixed(0)}</h5>
                             </div>
                         </div>
                     </div>

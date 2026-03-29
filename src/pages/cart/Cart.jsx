@@ -13,7 +13,10 @@ const Cart = () => {
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(false);
-    const [cartData, setCartData] = useState({});
+    const [cartData, setCartData] = useState({
+        products: [],
+        cartTotal: 0
+    });
 
     useEffect(() => {
 
@@ -42,7 +45,6 @@ const Cart = () => {
 
     }, []);
 
-
     const handleIncrementQuantity = (productId) => {
         dispatch(incrementQuantity(productId))
     }
@@ -51,7 +53,7 @@ const Cart = () => {
         dispatch(decrementQuantity(productId))
     }
 
-    const handleRemoveProduct = (product) => {  
+    const handleRemoveProduct = (product) => {
         dispatch(removeProductFromCart(product))
     }
 
@@ -79,7 +81,6 @@ const Cart = () => {
                                     </thead>
                                     <tbody className="align-middle">
                                     {
-    
                                         cartData.products.map((item) => (
                                     
                                             <tr key={item._id}>
@@ -161,7 +162,7 @@ const Cart = () => {
                       <div className="card-body">
                           <div className="d-flex justify-content-between mb-3 pt-1">
                               <h6 className="font-weight-medium">Subtotal</h6>
-                              <h6 className="font-weight-medium"></h6>
+                              <h6 className="font-weight-medium">₹{ cartData.cartTotal.toFixed(2) }</h6>
                           </div>
                           <div className="d-flex justify-content-between">
                               <h6 className="font-weight-medium">Shipping</h6>
