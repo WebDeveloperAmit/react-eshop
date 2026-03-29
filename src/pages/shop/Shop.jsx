@@ -55,16 +55,23 @@ const Shop = () => {
                 quantity: localQty
             });
 
-            // console.log("Add to cart response:", res);
-            // return;
-
             if (res?.status === "success") {
 
+                // dispatch(addToCart({ 
+                //     ...product, 
+                //     _id: product._id, 
+                //     quantity: localQty 
+                // }));
+
                 dispatch(addToCart({ 
-                    ...product, 
-                    _id: product._id, 
-                    quantity: localQty 
+                    _id: product._id,
+                    productId: product._id,
+                    product_name: product.product_name,
+                    price: Number(product.price || 0),
+                    quantity: Number(localQty || 1),
+                    image: product.thumbnail_image_url || ""
                 }));
+
                 toast.success(res?.message);
             }
             

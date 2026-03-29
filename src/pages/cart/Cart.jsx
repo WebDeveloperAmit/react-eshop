@@ -1,92 +1,38 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader';
-import { decrementQuantity, incrementQuantity, removeProductFromCart } from '../../redux/slices/CartSlice';
-import { getCartService, removeCartService } from '../../services/CartService';
 
 const Cart = () => {
 
-    const shippingCost = 10;
     const dispatch = useDispatch();
-
     const [loading, setLoading] = useState(false);
-    const [cartData, setCartData] = useState({
-        products: [],
-        cartTotal: 0
-    });
 
-    useEffect(() => {
+     const shippingCost = 10;
 
-        const fetchCartData = async () => {
-            try {
-                setLoading(true);
-                const res = await getCartService();
-                // console.log("Cart data fetched:", res);
-                setTimeout(() => {
-                    if (res?.status === "success") {
-                        setLoading(false);
-                        setCartData(res.data);
-                    } else {
-                        setLoading(false);
-                        toast.error(res?.message);
-                    }
-                }, 1000);
-            } catch (error) {
-                setLoading(false);
-                console.error("Failed to fetch cart data:", error);
-                toast.error("Failed to fetch cart data");
-            }
-        }
+    // Get cart items from Redux store
+    const cartItems = useSelector((state) => state.cart.cart);
+    const cartTotal = cartItems.reduce(
+        (total, item) =>
+        total + Number(item.price || 0) * Number(item.quantity || 0),
+        0
+    );
 
-        fetchCartData();
-
-    }, []);
-
-    const handleIncrementQuantity = (productId) => {
-        dispatch(incrementQuantity(productId))
-    }
-
-    const handleDecrementQuantity = (productId) => {
-        dispatch(decrementQuantity(productId))
-    }
-
-    // const handleRemoveProduct = async (product) => {
-
-    //     try {
-    //         const res = await removeCartService(product._id);
-    //         if (res?.status === "success") {
-    //             setCartData({
-    //                 ...cartData,
-    //                 products: cartData.products.filter(p => p._id !== product._id)
-    //             });
-    //             dispatch(removeProductFromCart(product._id));
-    //             toast.success(res?.message);
-    //         } else {
-    //             toast.error(res?.message);
-    //         }
-    //     } catch (error) {
-    //         console.error("Failed to remove product from cart:", error);
-    //         toast.error("Failed to remove product from cart");
-    //     }
-
-    // }
-
+    // Cart item remove
     const handleRemoveProduct = (product) => {
-
-        toast.info(
+        const toastId = toast.info(
             <div>
                 <p>Remove this item?</p>
-                <button 
-                    onClick={() => confirmRemove(product)} 
+                <button
+                    onClick={() => confirmRemove(product, toastId)}
                     className="btn btn-sm btn-danger mr-2"
                 >
                     Yes
                 </button>
-                <button 
-                    onClick={() => toast.dismiss()} 
+                <button
+                    onClick={() => toast.dismiss(toastId)}
                     className="btn btn-sm btn-secondary"
                 >
                     No
@@ -96,23 +42,32 @@ const Cart = () => {
         );
     };
 
-    const confirmRemove = async (product) => {
-        try {
-            const res = await removeCartService(product._id);
+    const confirmRemove = async (product, toastId) => {
+        console.log("Removing product:", product);
+        toast.dismiss(toastId);
+        // try {
+        //     const res = await removeCartService(product.productId._id);
 
-            if (res?.status === "success") {
-                setCartData(prev => ({
-                    ...prev,
-                    products: prev.products.filter(p => p._id !== product._id)
-                }));
+        //     if (res?.status === "success") {
 
-                dispatch(removeProductFromCart(product._id));
-                toast.dismiss();
-                toast.success(res?.message);
-            }
-        } catch (error) {
-            toast.error("Failed to remove product");
-        }
+        //         // Update UI properly
+        //         const updatedProducts = cartData.products.filter(
+        //             (p) => p.productId._id !== product.productId._id
+        //         );
+
+        //         setCartData(prev => ({
+        //             ...prev,
+        //             products: updatedProducts
+        //         }));
+
+        //         dispatch(removeProductFromCart(product.productId._id));
+
+        //         toast.dismiss(toastId);
+        //         toast.success(res?.message);
+        //     }
+        // } catch (error) {
+        //     toast.error("Failed to remove product");
+        // }
     };
 
   return (
@@ -125,7 +80,7 @@ const Cart = () => {
                     loading ? (
                         <Loader />
                     ) : (
-                        cartData && cartData?.products?.length > 0 ? (
+                        cartItems && cartItems?.length > 0 ? (
                             <>
                                 <table className="table table-bordered mb-0">
                                     <thead className="bg-secondary text-dark">
@@ -139,14 +94,14 @@ const Cart = () => {
                                     </thead>
                                     <tbody className="align-middle">
                                     {
-                                        cartData.products.map((item) => (
+                                        cartItems.map((item) => (
                                     
-                                            <tr key={item._id}>
+                                            <tr key={item.productId}>
                                                 <td className="align-middle">
-                                                    <img src={`${import.meta.env.VITE_BACKEND_ASSETS_URI}${item.productId.thumbnail_image_url}`} alt={item.productId.product_name} style={{ width: "50px" }} /> {item.productId.product_name}
+                                                    <img src={`${import.meta.env.VITE_BACKEND_ASSETS_URI}${item.image}`} alt={item.product_name} style={{ width: "50px" }} /> {item.product_name}
                                                 </td>
 
-                                                <td className="align-middle">₹{item.price.toFixed(2)}</td>
+                                                <td className="align-middle">₹{Number(item.price || 0).toFixed(2)}</td>
 
                                                 <td className="align-middle">
                                                     <div className="input-group quantity mx-auto" style={{ width: "100px" }}>
@@ -155,7 +110,7 @@ const Cart = () => {
                                                             <button 
                                                             className="btn btn-sm btn-primary btn-minus" 
                                                             onClick={() => 
-                                                                handleDecrementQuantity(item._id)
+                                                                handleDecrementQuantity(item.productId)
                                                             }
                                                             >
                                                             <i className="fa fa-minus"></i>
@@ -168,7 +123,7 @@ const Cart = () => {
                                                             <button 
                                                             className="btn btn-sm btn-primary btn-plus"
                                                             onClick={() => 
-                                                                handleIncrementQuantity(item.id)
+                                                                handleIncrementQuantity(item.productId)
                                                             }
                                                             >
                                                                 <i className="fa fa-plus"></i>
@@ -179,7 +134,10 @@ const Cart = () => {
                                                 </td>
 
                                                 <td className="align-middle">
-                                                    ₹{(item.price * item.quantity).toFixed(2)}
+                                                    ₹{(
+                                                        Number(item.price || 0) *
+                                                        Number(item.quantity || 0)
+                                                    ).toFixed(2)}
                                                 </td>
 
                                                 <td className="align-middle"><button 
@@ -220,17 +178,17 @@ const Cart = () => {
                       <div className="card-body">
                           <div className="d-flex justify-content-between mb-3 pt-1">
                               <h6 className="font-weight-medium">Subtotal</h6>
-                              <h6 className="font-weight-medium">₹{ cartData.cartTotal.toFixed(2) }</h6>
+                              <h6 className="font-weight-medium">₹{ cartTotal.toFixed(2) || 0.00 }</h6>
                           </div>
                           <div className="d-flex justify-content-between">
                               <h6 className="font-weight-medium">Shipping</h6>
-                              <h6 className="font-weight-medium">₹{ shippingCost.toFixed(2) }</h6>
+                              <h6 className="font-weight-medium">₹{ shippingCost.toFixed(2) || 0.00 }</h6>
                           </div>
                       </div>
                       <div className="card-footer border-secondary bg-transparent">
                           <div className="d-flex justify-content-between mt-2">
                               <h5 className="font-weight-bold">Total</h5>
-                              <h5 className="font-weight-bold">₹{ (cartData.cartTotal + shippingCost).toFixed(2) }</h5>
+                              <h5 className="font-weight-bold">₹{ (cartTotal + shippingCost)?.toFixed(2) || 0.00 }</h5>
                           </div>
                           <Link 
                           to={`/checkout`}
