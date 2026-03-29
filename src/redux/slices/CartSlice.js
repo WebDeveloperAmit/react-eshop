@@ -52,14 +52,28 @@ export const cartSlice = createSlice({
         },
 
         incrementQuantity: (state, action) => {
-            const product = state.cart.find(item => item._id === action.payload);
+            const product = state.cart.find(
+                item => item.productId === action.payload
+            );
             if (product) product.quantity += 1;
         },
 
         decrementQuantity: (state, action) => {
-            const product = state.cart.find(item => item._id === action.payload)
+            const product = state.cart.find(
+                item => item.productId === action.payload
+            );
             if (product && product.quantity > 1) product.quantity -= 1;
         },
+
+        // incrementQuantity: (state, action) => {
+        //     const product = state.cart.find(item => item._id === action.payload);
+        //     if (product) product.quantity += 1;
+        // },
+
+        // decrementQuantity: (state, action) => {
+        //     const product = state.cart.find(item => item._id === action.payload)
+        //     if (product && product.quantity > 1) product.quantity -= 1;
+        // },
 
         removeProductFromCart: (state, action) => {
             state.cart = state.cart.filter(
