@@ -21,7 +21,6 @@ const Shop = () => {
             try {
                     setLoading(true);
                     const response = await fetchProducts();
-                    // console.log("Products loaded:", response);
                     setTimeout(() => {
                         if (response?.status === "success") {
                             setProducts(response?.data);

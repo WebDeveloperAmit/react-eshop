@@ -24,14 +24,20 @@ const axiosInstance = axios.create({
 
   );
 
-  // Handle 401 Unauthorized globally
+  // Handle Unauthorized globally
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      const message = error.response?.data?.message;
+      // Logout ONLY if token is invalid
+      if (message === "Invalid token") {
         localStorage.removeItem("token");
         window.location.href = "/login";
       }
+      // if (error.response?.status === 401) {
+      //   localStorage.removeItem("token");
+      //   window.location.href = "/login";
+      // }
       return Promise.reject(error);
     }
   );
