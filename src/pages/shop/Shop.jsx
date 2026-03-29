@@ -5,7 +5,9 @@ import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader.jsx';
 import ProductList from '../../components/ProductList.jsx';
 import { addToCart } from '../../redux/slices/CartSlice.js';
+import { addToCartService } from '../../services/CartService.js';
 import { fetchProducts } from '../../services/ShopService.js';
+import { isLoggedIn } from '../../utils/Helper.js';
 
 const Shop = () => {
 
@@ -39,9 +41,33 @@ const Shop = () => {
         loadProducts();
     }, []);
 
-    const handleAddToCart = (product) => {
-        dispatch(addToCart({ ...product, quantity: localQty }))
-        toast.success(`Product added to cart!`);
+    const handleAddToCart = async (product) => {
+
+        if (!isLoggedIn()) {
+            toast.error("Please login first");
+            return;
+        }
+
+        try {
+
+            const res = await addToCartService({
+                productId: product._id,
+                quantity: localQty
+            });
+
+            if (res?.status !== "success") {
+                toast.error(res?.message);
+                return;
+            }
+
+            dispatch(addToCart({ ...product, _id: product._id, quantity: localQty }));
+            toast.success(`Product added to cart!`);
+            
+        } catch (error) {
+            console.error("Failed to add product to cart:", error);
+            toast.error("Failed to add product to cart");
+        }
+
     }
 
     // fetch all category and calculates how many products belong to each category
