@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader';
-import { removeProductFromCart } from '../../redux/slices/CartSlice';
+import { decrementQuantity, incrementQuantity, removeProductFromCart } from '../../redux/slices/CartSlice';
 import { removeCartService, updateCartQtyService } from '../../services/CartService';
 
 const Cart = () => {
@@ -53,15 +53,17 @@ const Cart = () => {
 
     // }, []);
 
-    const handleIncrementQuantity = async (productId) => {
-
+    const handleIncrementQuantity = async (productId, currentQty) => {
+        // console.log("Incrementing quantity for product ID:", productId);
+        // return;
         try {
-            const res = await updateCartQtyService(productId, 1);
+            const newQty = currentQty + 1;
+            const res = await updateCartQtyService(productId, newQty);
 
             if (res?.status === "success") {
                 dispatch(incrementQuantity(productId));
             } else {
-                toast.error(res?.message || "Failed to update quantity");
+                toast.error(res?.message);
             }
         } catch (error) {
             console.error("Failed to update cart quantity:", error);
@@ -153,7 +155,7 @@ const Cart = () => {
                                                             <button 
                                                             className="btn btn-sm btn-primary btn-minus" 
                                                             onClick={() => 
-                                                                handleDecrementQuantity(item.productId)
+                                                                handleDecrementQuantity(item.productId, item.quantity)
                                                             }
                                                             >
                                                             <i className="fa fa-minus"></i>
@@ -166,7 +168,7 @@ const Cart = () => {
                                                             <button 
                                                             className="btn btn-sm btn-primary btn-plus"
                                                             onClick={() => 
-                                                                handleIncrementQuantity(item.productId)
+                                                                handleIncrementQuantity(item.productId, item.quantity)
                                                             }
                                                             >
                                                                 <i className="fa fa-plus"></i>
