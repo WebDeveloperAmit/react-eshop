@@ -72,8 +72,23 @@ const Cart = () => {
 
     }
 
-    const handleDecrementQuantity = (productId) => {
-        dispatch(decrementQuantity(productId))
+    const handleDecrementQuantity = async (productId, currentQty) => {
+        // console.log("Incrementing quantity for product ID:", productId);
+        // return;
+        try {
+            const newQty = currentQty - 1;
+            const res = await updateCartQtyService(productId, newQty);
+
+            if (res?.status === "success") {
+                dispatch(decrementQuantity(productId));
+            } else {
+                toast.error(res?.message);
+            }
+        } catch (error) {
+            console.error("Failed to update cart quantity:", error);
+            toast.error("Failed to update cart quantity");
+        }
+
     }
 
     // Cart item remove
