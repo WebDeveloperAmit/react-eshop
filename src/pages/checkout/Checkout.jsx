@@ -23,24 +23,11 @@ const Checkout = () => {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [zipCode, setZipCode] = useState('');
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); 
 
     const [shippingAddress, setShippingAddress] = useState({});
     const [useSameBillingAddress, setUseSameBillingAddress] = useState(false);
 
-    const handlePlaceOrder = () => {
-        // Validate form fields
-        if (!firstName || !lastName || !email || !mobile || !address1 || !city || !state || !zipCode) {
-            toast.error('All fields are required');
-            return;
-        }
-
-        if (setUseSameBillingAddress) {
-            if (!shippingAddress.firstName || !shippingAddress.lastName || !shippingAddress.email || !shippingAddress.mobile || !shippingAddress.address1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode) {
-                toast.error('All fields are required in Shipping Address');
-                return;
-            }
-        }
-    }
 
     const handleCheckboxChange = (e) => {
         const isChecked = e.target.checked;
@@ -64,6 +51,61 @@ const Checkout = () => {
         }
     }
 
+    const handlePaymentRadioChange = (method) => {
+        setSelectedPaymentMethod(method);
+    }
+
+    const handlePlaceOrder = async () => {
+        // Validate form fields
+        if (!firstName || !lastName || !email || !mobile || !address1 || !city || !state || !zipCode) {
+            toast.error('All fields are required');
+            return;
+        }
+
+        if (useSameBillingAddress === true) {
+            if (!shippingAddress.firstName || !shippingAddress.lastName || !shippingAddress.email || !shippingAddress.mobile || !shippingAddress.address1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode) {
+                toast.error('All fields are required in Shipping Address');
+                return;
+            }
+        }
+
+        // Place order logic here
+        const orderData = {
+            billingAddress: {
+                firstName,
+                lastName,
+                email,
+                mobile,
+                address1,
+                address2,
+                country,
+                city,
+                state,
+                zipCode
+            },
+            shippingAddress: useSameBillingAddress ? shippingAddress : {},
+            orderItems: cartProducts,
+            subtotal: totalPrice,
+            shippingCost: ShippingCost,
+            paymentMethod: selectedPaymentMethod,
+            total: grandTotal
+        };
+console.log('Order Data:', orderData);
+        // try {
+        //     const response = await PlaceOrderService(orderData);
+        //     if (response?.status) {
+        //         toast.success(response?.message);
+        //     } else {
+        //         toast.error(response?.message);
+        //     }
+        // } catch (error) {
+        //     console.error('Error placing order:', error);
+        //     toast.error(error.response?.data?.message);
+        // }
+        
+        // console.log('Order Data:', orderData);
+
+    }
 
   return (
     <>
@@ -415,14 +457,26 @@ const Checkout = () => {
 
                             <div className="form-group">
                                 <div className="custom-control custom-radio">
-                                    <input type="radio" className="custom-control-input" name="razorpay" id="razorpay" />
+                                    <input 
+                                    type="radio" 
+                                    className="custom-control-input" 
+                                    name="razorpay" 
+                                    id="razorpay" 
+                                    onChange={() => handlePaymentRadioChange('razorpay')} 
+                                    />
                                     <label className="custom-control-label" htmlFor="razorpay">Razorpay</label>
                                 </div>
                             </div>
 
                             <div className="">
                                 <div className="custom-control custom-radio">
-                                    <input type="radio" className="custom-control-input" name="cod" id="cod" />
+                                    <input 
+                                    type="radio" 
+                                    className="custom-control-input" 
+                                    name="cod" 
+                                    id="cod" 
+                                    onChange={() => handlePaymentRadioChange('cod')} 
+                                    />
                                     <label className="custom-control-label" htmlFor="cod">Cash on Delivery</label>
                                 </div>
                             </div>
