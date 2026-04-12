@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
+import { PlaceOrderService } from '../../services/CheckoutService';
 
 const Checkout = () => {
 
@@ -63,11 +64,26 @@ const Checkout = () => {
         }
 
         if (useSameBillingAddress === true) {
-            if (!shippingAddress.firstName || !shippingAddress.lastName || !shippingAddress.email || !shippingAddress.mobile || !shippingAddress.address1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode) {
-                toast.error('All fields are required in Shipping Address');
+            if (!shippingAddress.firstName || !shippingAddress.mobile || !shippingAddress.address1) {
+                toast.error('Fill shipping address');
                 return;
             }
         }
+
+        const finalShipping = useSameBillingAddress
+                            ? shippingAddress
+                            : {
+                                firstName,
+                                lastName,
+                                email,
+                                mobile,
+                                address1,
+                                address2,
+                                country,
+                                city,
+                                state,
+                                zipCode
+                            };
 
         // Place order logic here
         const orderData = {
@@ -83,25 +99,25 @@ const Checkout = () => {
                 state,
                 zipCode
             },
-            shippingAddress: useSameBillingAddress ? shippingAddress : {},
+            shippingAddress: finalShipping,
             orderItems: cartProducts,
             subtotal: totalPrice,
-            shippingCost: ShippingCost,
+            shipping: ShippingCost,
             paymentMethod: selectedPaymentMethod,
             total: grandTotal
         };
-console.log('Order Data:', orderData);
-        // try {
-        //     const response = await PlaceOrderService(orderData);
-        //     if (response?.status) {
-        //         toast.success(response?.message);
-        //     } else {
-        //         toast.error(response?.message);
-        //     }
-        // } catch (error) {
-        //     console.error('Error placing order:', error);
-        //     toast.error(error.response?.data?.message);
-        // }
+        // console.log('Order Data:', orderData);
+        try {
+            const res = await PlaceOrderService(orderData);
+            if (res?.status) {
+                window.location.href = "/order-success";
+            } else {
+                toast.error(res?.message);
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            toast.error(error.response?.data?.message);
+        }
         
         // console.log('Order Data:', orderData);
 
