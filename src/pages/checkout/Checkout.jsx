@@ -53,6 +53,10 @@ const Checkout = () => {
     }
 
     const handlePaymentRadioChange = (method) => {
+        if (!method) {
+            toast.error('Select payment method');
+            return;
+        }
         setSelectedPaymentMethod(method);
     }
 
@@ -106,7 +110,9 @@ const Checkout = () => {
             paymentMethod: selectedPaymentMethod,
             total: grandTotal
         };
+
         // console.log('Order Data:', orderData);
+
         try {
             const res = await PlaceOrderService(orderData);
             if (res?.status) {
@@ -118,8 +124,6 @@ const Checkout = () => {
             console.error('Error placing order:', error);
             toast.error(error.response?.data?.message);
         }
-        
-        // console.log('Order Data:', orderData);
 
     }
 
@@ -478,7 +482,7 @@ const Checkout = () => {
                                     className="custom-control-input" 
                                     name="razorpay" 
                                     id="razorpay" 
-                                    onChange={() => handlePaymentRadioChange('razorpay')} 
+                                    onChange={() => handlePaymentRadioChange('Razorpay')} 
                                     />
                                     <label className="custom-control-label" htmlFor="razorpay">Razorpay</label>
                                 </div>
@@ -491,7 +495,7 @@ const Checkout = () => {
                                     className="custom-control-input" 
                                     name="cod" 
                                     id="cod" 
-                                    onChange={() => handlePaymentRadioChange('cod')} 
+                                    onChange={() => handlePaymentRadioChange('COD')} 
                                     />
                                     <label className="custom-control-label" htmlFor="cod">Cash on Delivery</label>
                                 </div>
