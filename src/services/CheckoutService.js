@@ -12,3 +12,17 @@ export const PlaceOrderService = async (orderData) => {
         }
     }
 }
+
+
+export const VerifyPaymentService = async (paymentData) => {
+    try {
+        const response = await axiosInstance.post('/verify-payment', paymentData);
+        return response?.data;
+    } catch (error) {
+        console.error('VerifyPaymentService: Error verifying payment:', error);
+        return {
+            status: false,
+            message: error.response?.data?.message
+        }
+    }   
+}

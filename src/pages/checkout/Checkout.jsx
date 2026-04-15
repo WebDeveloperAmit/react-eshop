@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
 import Loader from '../../components/Loader.jsx';
 import { cartEmpty } from '../../redux/slices/CartSlice.js';
-import { PlaceOrderService } from '../../services/CheckoutService.js';
+import { PlaceOrderService, VerifyPaymentService } from '../../services/CheckoutService.js';
 
 const Checkout = () => {
 
@@ -179,7 +179,6 @@ const Checkout = () => {
                     handler: async function (response) {
                         try {
                             const verifyRes = await VerifyPaymentService({
-                                orderId,
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature
