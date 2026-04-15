@@ -122,21 +122,110 @@ const Checkout = () => {
         // console.log('Order Data:', orderData);
 
         try {
+
             setLoading(true);
+
             const res = await PlaceOrderService(orderData);
-            if (res?.status) {
+
+            if (!res?.status) {
+                setLoading(false);
+                toast.error(res?.message);
+                return;
+            }
+
+            // ============================
+            // COD FLOW
+            // ============================
+            if (selectedPaymentMethod === "COD") {
                 dispatch(cartEmpty());
+                setLoading(false);
                 setTimeout(() => {
                     navigate('/order-success');
                 }, 1500);
-            } else {
-                setLoading(false);
-                toast.error(res?.message);
+
+                return;
             }
+
+
+            // ============================
+            // RAZORPAY FLOW
+            // ============================
+            if (selectedPaymentMethod === "Razorpay") {
+
+                const { razorpayOrder, orderId } = res;
+
+                if (!razorpayOrder) {
+                    setLoading(false);
+                    toast.error("Payment initialization failed");
+                    return;
+                }
+
+                if (!window.Razorpay) {
+                    setLoading(false);
+                    toast.error("Razorpay SDK not loaded");
+                    return;
+                }
+
+                setLoading(false);
+
+                const options = {
+                    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                    amount: razorpayOrder.amount,
+                    currency: "INR",
+                    name: "My Shop",
+                    description: "Order Payment",
+                    order_id: razorpayOrder.id,
+
+                    handler: async function (response) {
+                        try {
+                            const verifyRes = await VerifyPaymentService({
+                                orderId,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            });
+
+                            if (verifyRes?.status) {
+                                dispatch(cartEmpty());
+                                navigate("/order-success");
+                            } else {
+                                toast.error("Payment verification failed");
+                            }
+
+                        } catch (error) {
+                            toast.error("Payment verification error");
+                        }
+                    },
+
+                    prefill: {
+                        name: `${firstName} ${lastName}`,
+                        email,
+                        contact: mobile
+                    },
+
+                    theme: { color: "#3399cc" },
+
+                    modal: {
+                        ondismiss: function () {
+                            toast.error("Payment cancelled");
+                        }
+                    }
+                };
+
+                const rzp = new window.Razorpay(options);
+
+                rzp.on('payment.failed', function () {
+                    toast.error("Payment failed");
+                });
+
+                rzp.open();
+            }
+
+
         } catch (error) {
             setLoading(false);
             console.error('Error placing order:', error);
-            toast.error(error.response?.data?.message);
+            toast.error(error.response?.data?.message || "Something went wrong");
         }
 
     }
