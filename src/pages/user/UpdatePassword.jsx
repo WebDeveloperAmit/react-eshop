@@ -57,7 +57,7 @@ const UpdatePassword = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container-fluid mt-5">
       <div className="row">
         <div className="col-md-3">
           <UserSidebar />

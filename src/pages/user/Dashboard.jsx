@@ -2,7 +2,7 @@ import UserSidebar from "../../components/user/UserSidebar";
 
 const Dashboard = () => {
   return (
-    <div className="container dashboard-container">
+    <div className="container-fluid dashboard-container">
 
       <div className="row">
 

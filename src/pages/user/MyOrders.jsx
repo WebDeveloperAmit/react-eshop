@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import UserSidebar from "../../components/user/UserSidebar";
 import { getAllOrdersService } from "../../services/UserService";
@@ -13,7 +12,8 @@ const MyOrders = () => {
       const fetchOrders = async () => {
         try {
           const response = await getAllOrdersService();
-          if(response?.status === "success"){
+          if(response?.status === "success") {
+            // console.log("Orders fetched successfully:", response.orders);
             setOrders(response?.orders);
           } else {
             toast.error(response?.message);
@@ -32,7 +32,7 @@ const MyOrders = () => {
 
 
   return (
-    <div className="container mt-5">
+    <div className="container-fluid mt-5">
       <div className="row">
         <div className="col-md-3">
           <UserSidebar />
@@ -41,15 +41,18 @@ const MyOrders = () => {
         <div className="col-md-9">
           <h4>My Orders</h4>
 
-          <table className="table orders-table">
+          <table className="table orders-table table-bordered">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Status</th>
+                <th>#ID</th>
+                <th>Item</th>
+                <th>Total Qty</th>
+                <th>Total Price</th>
+                <th>Order Status</th>
+                <th>Payment Method</th>
+                <th>Payment Status</th>
                 <th>Order Date</th>
-                <th>View</th>
+                {/* <th>View</th> */}
               </tr>
             </thead>
 
@@ -74,13 +77,28 @@ const MyOrders = () => {
                     <td>#{order._id.slice(-6).toUpperCase()}</td>
 
                     <td>
-                      {order.orderItems?.map((item, index) => (
-                        <div key={item.product?._id || index}>
-                          {item.product?.name || "Product"} (x{item.quantity})
-                        </div>
+                      {order.orderItems.map((item, index) => (
+                        <Link
+                          key={item.product?._id || index}
+                          to={`/shop-detail/${item.product?._id}`}
+                          target="_blank"
+                          style={{
+                            display: "inline-block",
+                            padding: "3px 8px",
+                            margin: "2px",
+                            background: "#f1f1f1",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            textDecoration: "none",
+                            color: "#333"
+                          }}
+                        >
+                          {item.product?.product_name || "Product"} x {item.quantity}
+                        </Link>
                       ))}
                     </td>
 
+                    <td>{order.orderItems.reduce((total, item) => total + item.quantity, 0)}</td> 
                     <td>₹{order.total}</td>
 
                     <td>
@@ -97,11 +115,14 @@ const MyOrders = () => {
                       </span>
                     </td>
 
+                    <td>{order.paymentMethod}</td>
+                    <td>{order.paymentStatus}</td>
+
                     <td>
                       {new Date(order.createdAt).toLocaleDateString("en-IN")}
                     </td>
 
-                    <td>
+                    {/* <td>
                       <Link
                         to={`/shop-detail/${order.orderItems[0]?.product?._id}`}
                         className="view-btn"
@@ -109,7 +130,7 @@ const MyOrders = () => {
                       >
                         <FaEye />
                       </Link>
-                    </td>
+                    </td> */}
 
                   </tr>
                 ))
@@ -118,6 +139,7 @@ const MyOrders = () => {
             </tbody>
 
           </table>
+
         </div>
       </div>
     </div>
