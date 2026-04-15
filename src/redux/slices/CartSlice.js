@@ -79,6 +79,10 @@ export const cartSlice = createSlice({
             state.cart = state.cart.filter(
                 item => item.productId !== action.payload
             );
+        },
+
+        cartEmpty: (state) => {
+            state.cart = [];
         }
 
         // removeProductFromCart: (state, action) => {
@@ -91,7 +95,14 @@ export const cartSlice = createSlice({
 
 })
 
-export const { setCart, addToCart, incrementQuantity, decrementQuantity, removeProductFromCart } = cartSlice.actions;
+export const { 
+    setCart, 
+    addToCart, 
+    incrementQuantity, 
+    decrementQuantity, 
+    removeProductFromCart, 
+    cartEmpty 
+} = cartSlice.actions;
 
 export const selectCartRowCount = state => state.cart.cart.length;
 

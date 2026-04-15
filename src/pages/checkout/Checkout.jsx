@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InnerBanner from '../../components/common/InnerBanner';
-import { PlaceOrderService } from '../../services/CheckoutService';
+import Loader from '../../components/Loader.jsx';
+import { cartEmpty } from '../../redux/slices/CartSlice.js';
+import { PlaceOrderService } from '../../services/CheckoutService.js';
 
 const Checkout = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const cartProducts = useSelector((state) => state.cart.cart);
     const ShippingCost = 10;
@@ -29,6 +35,7 @@ const Checkout = () => {
     const [shippingAddress, setShippingAddress] = useState({});
     const [useSameBillingAddress, setUseSameBillingAddress] = useState(false);
 
+    const [loading, setLoading] = useState(false);
 
     const handleCheckboxChange = (e) => {
         const isChecked = e.target.checked;
@@ -53,10 +60,6 @@ const Checkout = () => {
     }
 
     const handlePaymentRadioChange = (method) => {
-        if (!method) {
-            toast.error('Select payment method');
-            return;
-        }
         setSelectedPaymentMethod(method);
     }
 
@@ -72,6 +75,11 @@ const Checkout = () => {
                 toast.error('Fill shipping address');
                 return;
             }
+        }
+
+        if (selectedPaymentMethod === '') {
+            toast.error('Select payment method');
+            return;
         }
 
         const finalShipping = useSameBillingAddress
@@ -114,13 +122,19 @@ const Checkout = () => {
         // console.log('Order Data:', orderData);
 
         try {
+            setLoading(true);
             const res = await PlaceOrderService(orderData);
             if (res?.status) {
-                window.location.href = "/order-success";
+                dispatch(cartEmpty());
+                setTimeout(() => {
+                    navigate('/order-success');
+                }, 1500);
             } else {
+                setLoading(false);
                 toast.error(res?.message);
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error placing order:', error);
             toast.error(error.response?.data?.message);
         }
@@ -129,6 +143,25 @@ const Checkout = () => {
 
   return (
     <>
+        {loading && (
+            <div style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "rgba(0,0,0,0.5)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+                color: "#fff"
+            }}>
+                <Loader />
+                <p style={{ marginTop: "10px" }}>Placing your order...</p>
+            </div>
+        )}
         <InnerBanner title="Checkout" />
         <div className="container-fluid pt-5">
             <div className="row px-xl-5">
@@ -507,7 +540,10 @@ const Checkout = () => {
                             <button 
                             className="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"
                             onClick={() => handlePlaceOrder()}
-                            >Place Order</button>
+                            disabled={loading}
+                            >
+                            {loading ? "Wait! Placing Order..." : "Place Order"}
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomeLayout from "./components/layout/HomeLayout";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+import OrderSuccess from "./components/OrderSuccess";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -70,6 +71,10 @@ function App() {
               <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/profile" element={<UpdateProfile />} />
               <Route path="/change-password" element={<UpdatePassword />} />
+
+              {/* Order Success */}
+              <Route path="/order-success" element={<OrderSuccess />} />
+
             </Route>
 
 
@@ -80,6 +85,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/contact" element={<Contact />} />
+
           </Route>
         </Routes>
       </Router>

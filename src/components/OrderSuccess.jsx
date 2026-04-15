@@ -11,7 +11,7 @@ const OrderSuccess = () => {
       </p>
 
       <div style={{ marginTop: "30px" }}>
-        <Link to="/" className="btn btn-primary mr-3">
+        <Link to="/shop" className="btn btn-primary mr-3">
           Continue Shopping
         </Link>
 
